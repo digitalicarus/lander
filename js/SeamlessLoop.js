@@ -44,11 +44,11 @@ function SeamlessLoop() {
 			  chrome: Boolean(window.chrome),
 			  safari: Boolean(!window.chrome && /safari/.test( navigator.userAgent.toLowerCase() ) && window.getComputedStyle && !window.globalStorage && !window.opera)
 			};
-	console.debug("ff: " + this.is.ff);
-	console.debug("ie: " + this.is.ie);
-	console.debug("opera: " + this.is.opera);
-	console.debug("chrome: " + this.is.chrome);
-	console.debug("safari: " + this.is.safari);
+	console.log("ff: " + this.is.ff);
+	console.log("ie: " + this.is.ie);
+	console.log("opera: " + this.is.opera);
+	console.log("chrome: " + this.is.chrome);
+	console.log("safari: " + this.is.safari);
 	this._total = 0;
 	this._load = 0;
 	this.cb_loaded;
@@ -62,7 +62,7 @@ function SeamlessLoop() {
 	if(this.is.ff) this.stopDelay = 85;
 	if(this.is.opera) this.playDelay = 5;
 	if(this.is.opera) this.stopDelay = 0;
-	console.debug(this.playDelay + ", " + this.stopDelay);
+	console.log(this.playDelay + ", " + this.stopDelay);
 	this.next = 1;
 	this.audios = new Array();
 	this.actual = new Array();
@@ -89,7 +89,7 @@ function SeamlessLoop() {
 			audMute.pause();
 			try {
 				audMute.currentTime = 0;
-			} catch (e){console.debug(e.message);};
+			} catch (e){console.log(e.message);};
 		}, t.stopDelay);
 		
 		if(t.dropOld == true) {
@@ -98,7 +98,7 @@ function SeamlessLoop() {
 					t.old.pause();
 					try {
 						t.old.currentTime = 0;
-					} catch (e){console.debug(e.message);};
+					} catch (e){console.log(e.message);};
 				}
 			}, t.stopDelay);
 			t.dropOld = false;

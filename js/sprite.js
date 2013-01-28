@@ -57,25 +57,25 @@ Sprite.prototype.hasMembers = function(obj) {
 //-- just loops - assume context is ready
 Sprite.prototype.drawCanvasParts = function(ctx, parts) {
     ctx.save();
-    if(parts.length > 0) {
-        for(var i=0; i<parts.length; i++) {
-            ctx.beginPath();
-            ctx.strokeStyle = (parts[i].color) ? parts[i].color : this.color;
-            
-            ctx.moveTo(
-                (this.flipX) ? -parts[i].points[0] : parts[i].points[0],
-                (this.flipY) ? -parts[i].points[1] : parts[i].points[1]
-            );
-            for(var j=2; j<parts[i].points.length; j+=2) {
-                ctx.lineTo(
-                    (this.flipX) ? -parts[i].points[j] : parts[i].points[j],
-                    (this.flipY) ? -parts[i].points[j+1] : parts[i].points[j+1]
+        if(parts.length > 0) {
+            for(var i=0; i<parts.length; i++) {
+                ctx.beginPath();
+                ctx.strokeStyle = (parts[i].color) ? parts[i].color : this.color;
+                
+                ctx.moveTo(
+                    (this.flipX) ? -parts[i].points[0] : parts[i].points[0],
+                    (this.flipY) ? -parts[i].points[1] : parts[i].points[1]
                 );
+                for(var j=2; j<parts[i].points.length; j+=2) {
+                    ctx.lineTo(
+                        (this.flipX) ? -parts[i].points[j] : parts[i].points[j],
+                        (this.flipY) ? -parts[i].points[j+1] : parts[i].points[j+1]
+                    );
+                }
+                ctx.stroke();
+                ctx.closePath();
             }
-            ctx.stroke();
-            ctx.closePath();
         }
-    }
     ctx.restore();
 };
 
@@ -100,37 +100,37 @@ Sprite.prototype.drawCanvas = function(ctx) {
         //-- normal sprite parts
         this.drawCanvasParts(ctx, parts);
     
-    //-- animations
-    if(this.hasAnim) {
-        ctx.save();
-            //ctx.translate(this.x, this.y);
-        //(this.angle) ? ctx.rotate(this.angle) : null;
-
-            //-- service each animation
-            for(i in this.anim) {
-                ptr = this.anim[i].ptr;
-                ctr = this.anim[i].ctr;
-                if(this.anim[i].hasFrames && this.anim[i].on && this.anim[i].sequence[ptr]) {
-
-                    this.anim[i].ctr = (this.anim[i].ctr + 1) % this.anim[i].sequence[ptr]; // subtract 1 for 1-based count? too many conditions?
-                    //this.ptr += this.ptr % this.anim[i].frames.length;
-
-                    //-- animation i
-                    ctx.save();
-                        //-- set context for this frame
-                        //ctx.scale(this.anim[i].scaleX, this.anim[i].scaleY);
-                        //ctx.lineWidth = (this.anim[i].scaleX > this.anim[i].scaleY) ? 1/this.anim[i].scaleX : 1/this.anim[i].scaleY;
-                        this.drawCanvasParts(ctx, this.anim[i].frames[ptr].parts);
-                        
-                        if (ctr === 0) { // way to eliminate this?
-                            this.anim[i].ptr = (this.anim[i].ptr + 1) % this.anim[i].frames.length;
-                        }
-
-                    ctx.restore();
+        //-- animations
+        if(this.hasAnim) {
+            ctx.save();
+                //ctx.translate(this.x, this.y);
+            //(this.angle) ? ctx.rotate(this.angle) : null;
+    
+                //-- service each animation
+                for(i in this.anim) {
+                    ptr = this.anim[i].ptr;
+                    ctr = this.anim[i].ctr;
+                    if(this.anim[i].hasFrames && this.anim[i].on && this.anim[i].sequence[ptr]) {
+    
+                        this.anim[i].ctr = (this.anim[i].ctr + 1) % this.anim[i].sequence[ptr]; // subtract 1 for 1-based count? too many conditions?
+                        //this.ptr += this.ptr % this.anim[i].frames.length;
+    
+                        //-- animation i
+                        ctx.save();
+                            //-- set context for this frame
+                            //ctx.scale(this.anim[i].scaleX, this.anim[i].scaleY);
+                            //ctx.lineWidth = (this.anim[i].scaleX > this.anim[i].scaleY) ? 1/this.anim[i].scaleX : 1/this.anim[i].scaleY;
+                            this.drawCanvasParts(ctx, this.anim[i].frames[ptr].parts);
+                            
+                            if (ctr === 0) { // way to eliminate this?
+                                this.anim[i].ptr = (this.anim[i].ptr + 1) % this.anim[i].frames.length;
+                            }
+    
+                        ctx.restore();
+                    }
                 }
-            }
-        ctx.restore();
-    }
+            ctx.restore();
+        }
     ctx.restore();
 };
     

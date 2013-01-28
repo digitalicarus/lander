@@ -1,5 +1,5 @@
 // Ewww globals ... esp level, that's nasty... better fix these later
-/*global canvas:true,gravity:true,Wee:true,Sprite:true,level:true*/
+/*global canvas:true,gravity:true,Wee:true,Sprite:true,level:true,totalScore:true*/
 function Lander(arg) {
     arg = arg || {};
     var twoPi = Math.PI*2;
@@ -93,9 +93,9 @@ function Lander(arg) {
     };
     this.thrustDown = function() {
         if(Wee.paused()) { return; }
-        if (!Wee.paused() && this.thrust - this.thrustDecr >= 0) {
-            this.thrust -= this.thrustDecr;
-        }
+        if (!Wee.paused()) {
+            this.thrust = (this.thrust - this.thrustDecr >= 0) ? this.thrust - this.thrustDecr : 0;
+        } 
     };
     this.update = function() {
         if(this.sploding || this.escaped) {
@@ -120,6 +120,10 @@ function Lander(arg) {
         this.accY = (this.accY + this.gravity + (Math.sin(this.angle-Math.PI/2) * this.thrust * this.thrustMod));
         this.accX += (Math.cos(this.angle-Math.PI/2) * this.thrust * this.thrustMod);
         this.fuel -= this.thrust * this.fuelEff;
+        if(this.fuel < 0) {
+            this.fuel = 0;
+            sounds.ohno.ele.play();
+        }
     
         if(this.thrust*100 > 05) {
             this.anim.thrust.on = true;
@@ -150,10 +154,16 @@ function Lander(arg) {
                     this.landed = true;
                     sounds.landed.ele.playSound();
                     totalScore += scores.land * score;
+                    totalScore += scores.velocityBonus * (.1-this.speed)>>0;
                 } else {
+
                     this.sploding = true;
                     sounds.splode.ele.playSound();
-                    totalScore += scores.crash;
+                    if(score) {
+                        totalScore += scores.crashIntoPad;
+                    } else {
+                        totalScore += scores.crash;
+                    }
                 }
             }
         }
