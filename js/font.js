@@ -3,7 +3,6 @@ var Font = (function() {
     ,   s     = 2.17 // scale
     ,   i     = 0 // iterator
     ,   color = "#FFF"
-    ,   width = s*4+.5//ish
     ,   chars = {}
     ;
     
@@ -49,6 +48,7 @@ var Font = (function() {
         '<right>': {parts: [{points: [2,3.5,3,2,0,2,3,2,2,.5]}] },
         "<down>":  {parts: [{points: [0,1,1.5,0,1.5,4,1.5,0,3,1]}] },
         "-": {parts: [{points: [0,2,3,2]}] },
+        ",": {parts: [{points: [1,0,1,.5,2,.5,2,0,1.5,-.5,1.5,0,1,0]}]},
         ".": {parts: [{points: [1.3,0,1.7,0,1.7,.3,1.3,.3,1.3,0]}] },
         ":": {parts: [{points: [1,4,2,4,2,3,1,3,1,4]},{points: [1,1,2,1,2,0,1,0,1,1]}] },
         "!": {parts: [{points: [1,4,2,4,2,1.5,1,1.5,1,4]},{points: [1,1,2,1,2,0,1,0,1,1]}] },
@@ -67,28 +67,35 @@ var Font = (function() {
     }
     
     ret.drawCanvas = function(str, x, y, scale) {
-        var i   = 0
-        ,   str = str.toLowerCase()
-        ,   tmp = ""
-        ,   w   = 0
+        var i         = 0
+        ,   str       = str.toLowerCase()
+        ,   tmp       = ""
+        ,   w         = 0
+        ,   scale     = (scale) ? scale : s
+        ,   width     = scale*4 + .5
         ;
+    
     
         x += width; // losing a char width cause the x flip
         for(i=0; i<str.length; i++) {
 
+            ctx.save();
             try {
                 if(str[i] == '<') { // special char - unicode failed me on shared host :(
-                    tmp = chars[(str.slice(i, str.slice(i).indexOf('>')+1))];
-                    i = str.slice(i).indexOf('>'); // fix i
+                    tmp = chars[(str.slice(i, str.slice(i).indexOf('>')+i+1))];
+                    i += str.slice(i).indexOf('>'); // fix i
                 } else {
                     tmp = chars[str[i]];
                 }
+                
+                tmp.scale = scale;
                 tmp.y = y;
                 tmp.x = x + w*width;
                 // TODO: get grips with passing ctx around
                 tmp.drawCanvas(ctx);
                 w++;
             } catch(e) {}
+            ctx.restore();
         }
     };
     

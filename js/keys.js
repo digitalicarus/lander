@@ -3,13 +3,16 @@ var Keys = (function(){
     var ret      = {}
     ,   body     = document.getElementsByTagName('body')[0]
     ,   codes    = {
-            " ":     32
-        ,   "left":  37
-        ,   "right": 39
-        ,   w:       87
-        ,   a:       65
-        ,   s:       83
-        ,   d:       68
+            " ":      32
+        ,   "left":   37
+        ,   "up":     38
+        ,   "right":  39
+        ,   "enter":  13
+        ,   "escape": 27
+        ,   w:        87
+        ,   a:        65
+        ,   s:        83
+        ,   d:        68
         }
     ,   latch    = {} // currently pressed keys
     ,   on       = {} // key -> function map
