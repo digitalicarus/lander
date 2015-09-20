@@ -79,6 +79,7 @@ var canvas       = document.getElementsByTagName('canvas')[0]
 canvas.style.position = "absolute";
 canvas.width = 640;
 canvas.height = 480;
+
 ctx.imageSmoothingEnabled = false;
 
 var resize = function(evt) {
@@ -94,6 +95,8 @@ var resize = function(evt) {
         }
         canvas.style.top = (canvas.height*(scale-1)>>1)+"px";
         canvas.style.left = (canvas.width*(scale-1)>>1)+((width-canvas.width*scale)>>1)+"px";
+
+
 };
 
 // TODO: Move into sound class
@@ -420,7 +423,7 @@ if (touchmode) {
 	(function () {
 		// suppress long press menus
 		window.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-		var mc      = new Hammer.Manager(document.body)
+		var mc      = new Hammer.Manager(document.documentElement)
 		,   lastRot = 0
 		;
 		mc.add(new Hammer.Rotate());
