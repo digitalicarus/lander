@@ -71,7 +71,9 @@ var canvas       = document.getElementsByTagName('canvas')[0]
 ,   highScore    = (window.localStorage && localStorage.getItem('landOrDieHi')) ? localStorage.getItem('landOrDieHi') : 10
 ,   totalScore   = 0
 ,   i            = 0 // global iterator
+,   touchmode    = 'ontouchstart' in window
 ;
+
 
 //canvas.style.background = "#000";
 canvas.style.position = "absolute";
@@ -127,7 +129,7 @@ var Game = (function(){
         ret.modes = {};
         ret.setMode = function(mode) {
                 if(!ret.modes.hasOwnProperty(mode)) {
-                        console.log("Wat is "+mode+"?");
+                        //console.log("Wat is "+mode+"?");
                         return;
                 }
                 if(mode === "title") {
@@ -405,14 +407,39 @@ var Game = (function(){
 })(); // <-- woof()!
 
 // TODO: move this into an init function and enable initting in Sprite
-Keys.on('a', function() {console.log("a was pressed");if(Game.getMode() === "play") {lander.rotateLeft.apply(lander)}});
+Keys.on('a', function() {if(Game.getMode() === "play") {lander.rotateLeft.apply(lander)}});
 Keys.on('left', function() {if(Game.getMode() === "play") {lander.rotateLeft.apply(lander)}});
 Keys.on('d', function() {if(Game.getMode() === "play") {lander.rotateRight.apply(lander)}});
 Keys.on('right', function() {if(Game.getMode() === "play") {lander.rotateRight.apply(lander)}});
-Keys.on(' ', function() {if(Game.getMode() === "title") {Game.setMode("play"); sounds.doobiedoobie.ele.play()} if(Game.getMode() === "play") {lander.thrustUp.apply(lander)}});
-Keys.off(' ', function() {if(Game.getMode() === "play") {lander.thrustDown.apply(lander)}});
 Keys.on('escape', function() {if(Game.getMode() === "play") {Game.setMode("title")}});
+Keys.on(touchmode ? 'touch':' ', function() {if(Game.getMode() === "title") {Game.setMode("play"); sounds.doobiedoobie.ele.play()} if(Game.getMode() === "play") {lander.thrustUp.apply(lander)}});
+Keys.off(touchmode ? 'touch':' ', function() {if(Game.getMode() === "play") {lander.thrustDown.apply(lander)}}); 
 
+
+if (touchmode) {
+	(function () {
+		// suppress long press menus
+		window.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+		var mc      = new Hammer.Manager(document.body)
+		,   lastRot = 0
+		;
+		mc.add(new Hammer.Rotate());
+
+		mc.on('rotate', function (e) {
+			var diff = (e.rotation|0) - lastRot;
+			lastRot = e.rotation|0;
+			//console.log(diff, e.type);
+			Math.abs(diff) < 20 && lander.rotateAdd(diff*(Math.PI/180));
+		});
+		mc.on('rotatestart', function (e) {
+			lastRot = 0;
+			//console.log("ROTATE START");
+		});
+		mc.on('rotateend', function (e) {
+			//console.log("ROTATE END");
+		});
+	})();
+}
 
 // TODO: move into Wee with enablement flag
 window.addEventListener('blur', function(e) {
@@ -432,7 +459,6 @@ window.addEventListener('focus', function(e) {
         Wee.start();
     }
 }, false);
-
 
 //Start
 resize();

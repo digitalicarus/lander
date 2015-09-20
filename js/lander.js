@@ -73,6 +73,14 @@ function Lander(arg) {
             sequence: [4, 3]
         }
     };
+    this.rotateTo    = function (angle) {
+        if(Wee.paused()) { return; }
+        this.angle = (angle);
+	};
+	this.rotateAdd = function (angle) {
+		if(Wee.paused()) { return; }
+		this.angle += angle;
+	};
     this.rotateRight = function() {
         if(Wee.paused()) { return; }
         this.angle = (this.angle+this.rotateSpeed)%(twoPi);

@@ -9,15 +9,24 @@ var Keys = (function(){
         ,   "right":  39
         ,   "enter":  13
         ,   "escape": 27
+		,   "touch": 'touching'
         ,   w:        87
         ,   a:        65
         ,   s:        83
         ,   d:        68
-        }
+	}
     ,   latch    = {} // currently pressed keys
     ,   on       = {} // key -> function map
     ,   off      = {} // key -> function map
     ;
+
+    window.addEventListener('touchstart', function (e) {
+    	latch['touching'] = true;
+	}, false);
+
+	window.addEventListener('touchend', function (e) {
+		e.touches.length < 1 && (delete latch['touching']);
+	}, false);
     
     body.addEventListener('keydown', function(e) {
         var code = e.which || e.keyCode || e.key;
@@ -30,7 +39,7 @@ var Keys = (function(){
         //console.log("keyup: "+code);
         delete latch[code];
     }, false);
-    
+
     ret.on = function(key, func) {
         on[key] = func;
     };
